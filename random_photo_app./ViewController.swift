@@ -1,9 +1,7 @@
 //
 //  ViewController.swift
 //  RandomPhoto
-//
-//  Created by Athavan Gananathan on 2023-03-11.
-//
+
 
 import UIKit
 
