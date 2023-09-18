@@ -15,6 +15,7 @@ load_dotenv()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
+#acquires token to use Spotify API
 def get_token():
     auth_string = client_id + ":" + client_secret
     auth_bytes = auth_string.encode("utf-8")
@@ -51,7 +52,7 @@ def search_for_artist(token, artist_name):
 
     return json_result[0]
 
-
+#extracts songs from an artist
 def get_songs_by_artist(token, artist_id):
     url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?country=US"
     #country = any 2 digit country code
@@ -64,6 +65,7 @@ def get_songs_by_artist(token, artist_id):
         return None
     return json_result
 
+#extracts albums from an artist
 def get_artist_albums(token, artist_id):
     url=f"https://api.spotify.com/v1/artists/{artist_id}/albums"
     headers = get_auth_header(token)
@@ -72,6 +74,7 @@ def get_artist_albums(token, artist_id):
 
     return json_result
 
+#extracts the songs on a specific album
 def get_songs_on_album(token, album_id):
     url =f"https://api.spotify.com/v1/albums/{album_id}/tracks"
     headers = get_auth_header(token)
@@ -79,6 +82,7 @@ def get_songs_on_album(token, album_id):
     json_result = json.loads(result.content)["items"]
     return json_result
 
+#acquires the popularity level of a song (based on Spotify data)
 def get_popularity_of_song(token, song_id):
     url =f"https://api.spotify.com/v1/tracks/{song_id}"
     headers = get_auth_header(token)
@@ -86,6 +90,7 @@ def get_popularity_of_song(token, song_id):
     json_result = json.loads(result.content)
     return json_result
 
+#extracts features/attributes of a specific song
 def get_song_features(token, song_id):
     url = f"https://api.spotify.com/v1/audio-features/{song_id}"
     headers = get_auth_header(token)
@@ -105,6 +110,7 @@ for singer in artist_list:
 
     print("\n")
 
+    #lists top songs of an artist
     print("Top Songs:")
     for idx, song in enumerate(songs):
         print(f"{idx + 1}. {song['name']}")
@@ -137,7 +143,10 @@ for singer in artist_list:
         else:
             index-=1
 
+#list to hold underrated tracks of artist
 underrated_tracks = []
+
+#adds songs from artist that have lesser popularity (bottom 40% of songs in terms of popularity) onto list
 for num in range(len(full_discography)):
     alb_median = full_discography[num][1]
     for x in range(len(full_discography[num][0])):
@@ -148,6 +157,7 @@ underrated_tracks = list(dict.fromkeys(underrated_tracks))
 print('\n')
 print(f"Lesser Known Picks from {singer}: \n")
 num_list = []
+#randomly selects 8 lesser known songs from artists (after collecting list of lesser-known songs)
 for n in range(8):
     n = random.randint(0, len(underrated_tracks)-1)
     while n in num_list:
